@@ -1,0 +1,60 @@
+{% extends "Bank/base.html" %}
+
+{% block title %}Homepage{% endblock %}
+
+{% block main %}
+<!-- Introduction section -->
+<div class="row intro py-1">
+    <div class="col-sm-6 col-md">
+        <div class="heading text-center my-5">
+            <h3>Welcome to</h3>
+            <h1>SPARKS BANK</h1>
+        </div>
+    </div>
+    <div class="col-sm-6 col-md img text-center">
+        <img src="static/img/bank.png" class="img-fluid pt-2">
+    </div>
+</div>
+<br>
+<br>
+<!-- Activity section -->
+<div class="row activity text-center">
+    <div class="col-sm-4">
+        <img src="static/img/user.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'create_user' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Create User</button></a>
+    </div>
+    <div class="col-sm-4">
+        <img src="static/img/transfer.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'transaction' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Transaction</button></a>
+    </div>
+    <div class="col-sm-4">
+        <img src="static/img/history.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'transaction_history' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Transaction History</button></a>
+    </div>
+</div>
+<!-- <div class="row activity text-center">
+    <div class="col-md act">
+        <img src="static/img/user.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'create_user' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Create User</button></a>
+    </div>
+    <div class="col-md act">
+        <img src="static/img/transfer.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'transaction' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Transaction</button></a>
+    </div>
+    <div class="col-md act">
+        <img src="static/img/history.jpg" class="img-fluid">
+        <br>
+        <a href="{% url 'transaction_history' %}"><button type="button" class="btn btn-outline-info btn-lg" style="border-radius: 12px;">Transaction History</button></a>
+    </div>
+</div> -->
+<br>
+<br>
+<footer class="text-center mt-5 py-2">
+    <p>&copy 2021. Made by <b>Henil Kakadiya</b> <br> The Sparks Foundation</p>
+</footer>
+{% endblock %}
