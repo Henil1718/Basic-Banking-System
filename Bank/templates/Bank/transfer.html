@@ -3,6 +3,9 @@
 {% block title %}Transfer{% endblock %}
 
 {% block main %}
+{% if form.error %}
+    <p>{{ form.error }}</p>
+{% endif %}
 <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
         <div class="panel panel-default">
@@ -49,7 +52,7 @@
                                     <hr />
                                     <div class="col-lg-4">
                                         <button type="submit" name="submit" class="btn btn-info"
-                                            style="border-radius: 8px;" value="{{user.name}}">Create</button>
+                                            style="border-radius: 8px;" value="{{user.name}}">Transfer</button>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from datetime import datetime
+from django.contrib import messages
 from django.db.models import F
 
 from .forms import CreateUserform, CreateTransferform
@@ -10,7 +11,7 @@ from .models import Userform, Transferform
 def bank(request):
     return render(request, 'Bank/bank.html')
 
-# available users page
+# users page
 def transaction(request):
     users = Userform.objects.all()
     context = {
@@ -24,6 +25,7 @@ def create_user(request):
         form = CreateUserform(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, f'Your account has been created!')
             return redirect('transaction')
     else:
         form = CreateUserform()
@@ -40,31 +42,34 @@ def transfer(request, user_id):
         if forms.is_valid():
             receiver = forms.cleaned_data['receiver_name']
             amount = forms.cleaned_data['amount']
-            sender = user
-            sender_name = Userform.objects.get(name=sender)
+            sender_name = Userform.objects.get(name=user)
+            sender = sender_name.name
 
-            if receiver != user and sender_name.balance >= amount:
-                sender_name.balance = F('balance') - amount
-                sender_name.save()
+            if Userform.objects.filter(name=receiver).exists():
+                if receiver == sender:
+                    messages.error(request, 'Enter a valid name')
+                elif sender_name.balance < amount:
+                    messages.error(request, 'Insufficient balance')
+                elif amount < 0:
+                    messages.error(request, 'Enter positive amount')
+                elif sender_name.balance >= amount:
+                    sender_name.balance = F('balance') - amount
+                    sender_name.save()
 
-                receiver_name = Userform.objects.get(name=receiver)
-                receiver_name.balance = F('balance') + amount
-                receiver_name.save()
+                    receiver_name = Userform.objects.get(name=receiver)
+                    receiver_name.balance = F('balance') + amount
+                    receiver_name.save()
 
-                transfer_form = Transferform()
-                transfer_form.sender_name = sender
-                transfer_form.receiver_name = receiver
-                transfer_form.amount = amount
-                transfer_form.date = datetime.now()
-                transfer_form.save()
-
-                return redirect('transaction_history')
+                    transfer_form = Transferform()
+                    transfer_form.sender_name = sender_name
+                    transfer_form.receiver_name = receiver
+                    transfer_form.amount = amount
+                    transfer_form.date = datetime.now()
+                    transfer_form.save()
+                    messages.success(request, 'Transaction successful')
+                    return redirect('transaction_history')
             else:
-                html = '<div class="alert alert-warning"> <strong>Warning!</strong> Indicates a warning that might need attention.</div>'
-                return HttpResponse('Error handler content', status=403)
-        else:
-            html = '<div class="alert alert-warning"> <strong>Warning!</strong> Indicates a warning that might need attention.</div>'
-            return HttpResponse(html)
+                messages.error(request, 'Enter valid name')
     else:
         forms = CreateTransferform()
     context = {
@@ -76,7 +81,8 @@ def transfer(request, user_id):
 # transaction_history page
 def transaction_history(request):
     transaction_details = Transferform.objects.all()
+    result = reversed(list(transaction_details))
     context = {
-        'transaction_details' : transaction_details
+        'transaction_details' : result
     }
     return render(request, 'Bank/transaction_history.html', context)
